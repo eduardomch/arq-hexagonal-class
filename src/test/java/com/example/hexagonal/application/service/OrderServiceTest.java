@@ -4,16 +4,17 @@ import com.example.hexagonal.application.ports.OrderRepository;
 import com.example.hexagonal.application.service.OrderService;
 import com.example.hexagonal.domain.model.Order;
 import com.example.hexagonal.domain.model.OrderItem;
-import io.quarkus.test.Mock;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,7 +59,13 @@ class OrderServiceTest {
 
     @Test
     void testGetAllOrders() {
-        // similar to above, test for getAllOrders()
+        Order order = new Order(1L, "Test Order", LocalDateTime.now());
+        when(orderRepository.findAll()).thenReturn(List.of(order));
+
+        List<Order> fetchedOrder = orderService.getAllOrders();
+
+        assertEquals(order.getDescription(), fetchedOrder.get(0).getDescription());
+        verify(orderRepository, times(1)).findAll();
     }
 
     @Test

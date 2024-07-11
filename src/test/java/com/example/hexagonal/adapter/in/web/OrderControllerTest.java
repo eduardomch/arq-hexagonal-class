@@ -6,6 +6,7 @@ import com.example.hexagonal.domain.model.OrderItem;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import jakarta.ws.rs.core.MediaType;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -14,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
@@ -37,7 +39,7 @@ class OrderControllerTest {
 
     @Test
     void testCreateOrder() {
-        Order order = new Order(null, "Test Order", LocalDateTime.now());
+        Order order = new Order(1L, "Test Order", LocalDateTime.now());
         when(orderService.createOrder(order)).thenReturn(order);
 
         given()
@@ -47,16 +49,17 @@ class OrderControllerTest {
                 .post("/orders")
                 .then()
                 .statusCode(201)
-                .body("id", is(order.getId()));
+                .body("id", is(order.getId().intValue()));
     }
 
     @Test
     void testGetOrder() {
+        testCreateOrder();
         Order order = new Order(1L, "Test Order", LocalDateTime.now());
         when(orderService.getOrder(1L)).thenReturn(Optional.of(order));
 
         given()
-                .pathParam("id", 1L)
+                .pathParam("id", 1)
                 .when()
                 .get("/orders/{id}")
                 .then()
@@ -66,7 +69,16 @@ class OrderControllerTest {
 
     @Test
     void testGetAllOrders() {
-        // similar to above, test for getAllOrders()
+        testCreateOrder();
+        LocalDateTime date = LocalDateTime.now();
+        Order order = new Order(1L, "Test Order", date);
+        when(orderService.getOrder(1L)).thenReturn(Optional.of(order));
+
+        given()
+                .when()
+                .get("/orders")
+                .then()
+                .statusCode(200);
     }
 
     @Test
