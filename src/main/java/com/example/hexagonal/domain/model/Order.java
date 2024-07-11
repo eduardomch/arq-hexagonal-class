@@ -5,25 +5,26 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Table(name = "\"Order\"")
+@Table(name = "orders")
 public class Order {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime creationDate;
-    private String status;
+    private String description;
+    private LocalDateTime orderDate;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> items = new ArrayList<>();
-
-    public Order() {}
-    public Order(LocalDateTime creationDate, String status) {
-        this.creationDate = creationDate;
-        this.status = status;
+    public Order() {
     }
+
+    public Order(Long id, String description, LocalDateTime orderDate) {
+        this.id = id;
+        this.description = description;
+        this.orderDate = orderDate;
+    }
+
 
     public Long getId() {
         return id;
@@ -33,35 +34,32 @@ public class Order {
         this.id = id;
     }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getStatus() {
-        return status;
+    public LocalDateTime getOrderDate() {
+        return orderDate;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
     }
 
-    public List<OrderItem> getItems() {
-        return items;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id);
     }
 
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
-    }
-
-    public void addItem(OrderItem item) {
-        this.items.add(item);
-    }
-
-    public void updateStatus(String status) {
-        this.status = status;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

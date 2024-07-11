@@ -1,6 +1,6 @@
-package com.example.hexagonal.adapter;
+package com.example.hexagonal.adapter.in.web;
 
-import com.example.hexagonal.application.ProductService;
+import com.example.hexagonal.application.service.ProductService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
